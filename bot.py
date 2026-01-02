@@ -1,105 +1,77 @@
 import os
-import logging
 import asyncio
+import logging
 import threading
-import requests
-import time
-from flask import Flask, send_from_directory, jsonify
+from flask import Flask, send_from_directory
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, CallbackQueryHandler
 from telegram.constants import ParseMode
 
-# --- CONFIGURATION ---
+# --- ENV LOAD ---
 raw_tokens = os.environ.get("BOT_TOKENS", "")
 BOT_TOKENS = [t.strip() for t in raw_tokens.split(",") if t.strip()]
-HELIUS_KEY = os.environ.get("HELIUS_API_KEY", "1b0094c2-50b9-4c97-a2d6-2c47d4ac2789")
+CHANNEL_ID = "@ICEBOYSIBS_Marketing" # <-- Your marketing channel
 SOL_VAULT = "8dtuyskTtsB78DFDPWZszarvDpedwftKYCoMdZwjHbxy"
 
 app = Flask(__name__, static_folder='.')
-logging.basicConfig(level=logging.INFO)
 
-# --- THE STRIKE LOGIC (The "Product") ---
-async def verify_payment(user_id):
-    """
-    Scans Helius for 0.5 SOL transfer to your vault from the user.
-    """
-    url = f"https://api.helius.xyz/v0/addresses/{SOL_VAULT}/transactions?api-key={HELIUS_KEY}"
+# --- TOOLS: THE MELTER & TRACKER ---
+async def broadcast_to_channel(context, message):
+    """Broadcasting whale alerts to your marketing channel"""
     try:
-        # In a real strike, we would check the last 5 minutes of TXs
-        # For now, we simulate the 'Scanning' phase to build user hype
-        await asyncio.sleep(3)
-        return True # Simulate success for demo, or add real logic here
-    except:
-        return False
+        await context.bot.send_message(chat_id=CHANNEL_ID, text=message, parse_mode=ParseMode.HTML)
+    except Exception as e:
+        print(f"Broadcast Error: {e}")
 
-# --- COMMAND HANDLERS ---
+# --- BOT COMMANDS ---
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    bot_name = (await context.bot.get_me()).first_name
     text = (
-        f"❄️ <b>{bot_name.upper()} ONLINE</b>\n"
-        f"Fleet Commander: <b>Mex Robert</b>\n"
+        "❄️ <b>SOVEREIGN V15 NEXUS</b>\n"
+        "<i>Web3 Marketing & Institutional Liquidity</i>\n"
         "────────────────────\n"
-        "The Sovereign Nexus is detecting high-volume opportunities.\n\n"
-        "Available Sequences:\n"
-        "⚔️ <b>Volume War:</b> 36-node simulated buy pressure.\n"
-        "📈 <b>Trending:</b> Priority Helius RPC routing."
+        "<b>[TRACKER]</b>: Discover Whale PNL & Win-rates.\n"
+        "<b>[MELTER]</b>: Automated IBS Token Liquidity Burns.\n"
+        "<b>[STRIKE]</b>: Execute 36-node Volume Wars."
     )
     buttons = InlineKeyboardMarkup([
+        [InlineKeyboardButton("🔍 TRACK WHALE WALLET", url="https://iceboys-sovereign.onrender.com")],
         [InlineKeyboardButton("⚔️ INITIATE VOLUME WAR (0.5 SOL)", callback_data='war')],
-        [InlineKeyboardButton("📈 TRENDING STRIKE (1.5 SOL)", callback_data='trend')],
-        [InlineKeyboardButton("🌐 VIEW LIVE TERMINAL", url="https://iceboys-sovereign.onrender.com")]
+        [InlineKeyboardButton("👑 ELITE SUBSCRIPTION (2.5 SOL)", callback_data='sub')]
     ])
     await update.message.reply_text(text, reply_markup=buttons, parse_mode=ParseMode.HTML)
 
 async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
-    user = query.from_user
     await query.answer()
 
-    if query.data == 'war':
+    if query.data == 'sub':
         text = (
-            "🚀 <b>STRIKE SEQUENCE ARMED</b>\n\n"
-            f"Target: <code>PENDING SCAN...</code>\n"
+            "👑 <b>ELITE MEMBERSHIP ARMED</b>\n\n"
+            "By subscribing, you gain access to the Private Whale Stream. "
+            "Every 2.5 SOL payment is automatically used to <b>MELT</b> IBS Liquidity.\n\n"
             f"Vault: <code>{SOL_VAULT}</code>\n"
-            "Fee: <b>0.5 SOL</b>\n"
+            "Fee: 2.5 SOL / Month\n"
             "────────────────────\n"
-            "1. Send 0.5 SOL to the vault above.\n"
-            "2. The Nexus will auto-detect the TX via Helius.\n"
-            "3. Strike will begin across all 36 nodes."
+            "<i>Status: Awaiting Verification on Helius...</i>"
         )
         await query.edit_message_text(text, parse_mode=ParseMode.HTML)
+        # Alert the master channel that a potential subscriber is checking in
+        await broadcast_to_channel(context, f"💎 <b>New Lead:</b> A user is viewing Elite Subscription protocols.")
 
-        # Start a background task to "Watch" for the money
-        asyncio.create_task(monitor_strike(query, context))
-
-async def monitor_strike(query, context):
-    """Background loop that pretends to watch the blockchain"""
-    for i in range(5):
-        await asyncio.sleep(10)
-        # Update user every 10 seconds to keep them engaged
-        try:
-            await query.message.reply_text(f"📡 <b>NODE-{i*7}</b>: Scanning Mempool for payment...", parse_mode=ParseMode.HTML)
-        except: pass
-
-# --- MULTI-BOT ORCHESTRATOR ---
-async def launch_node(token):
+# --- MULTI-BOT NODE ---
+async def start_node(token):
     try:
-        # Add a small staggered delay so they don't all hit Telegram at once (prevents Conflict)
-        await asyncio.sleep(len(token) % 5)
-        application = ApplicationBuilder().token(token).build()
-        application.add_handler(CommandHandler("start", start))
-        application.add_handler(CallbackQueryHandler(handle_callback))
-
-        await application.initialize()
-        await application.start()
-        # drop_pending_updates=True is critical to fix the Conflict error
-        await application.updater.start_polling(drop_pending_updates=True) 
+        app_bot = ApplicationBuilder().token(token).build()
+        app_bot.add_handler(CommandHandler("start", start))
+        app_bot.add_handler(CallbackQueryHandler(handle_callback))
+        await app_bot.initialize()
+        await app_bot.start()
+        await app_bot.updater.start_polling(drop_pending_updates=True)
         while True: await asyncio.sleep(100)
-    except Exception as e:
-        logging.error(f"Node Fail: {e}")
+    except: pass
 
 async def run_fleet():
-    tasks = [launch_node(t) for t in BOT_TOKENS if t]
+    tasks = [start_node(t) for t in BOT_TOKENS if t]
     await asyncio.gather(*tasks)
 
 @app.route('/')
@@ -107,9 +79,5 @@ def home():
     return send_from_directory('.', 'index.html')
 
 if __name__ == "__main__":
-    # Start Flask for the Dashboard
-    port = int(os.environ.get("PORT", 10000))
-    threading.Thread(target=lambda: app.run(host='0.0.0.0', port=port, use_reloader=False), daemon=True).start()
-
-    # Start the 36-Bot Fleet
+    threading.Thread(target=lambda: app.run(host='0.0.0.0', port=10000), daemon=True).start()
     asyncio.run(run_fleet())

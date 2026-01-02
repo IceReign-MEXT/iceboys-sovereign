@@ -3,102 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IBS SOVEREIGN | V15 Command</title>
+    <title>IBS SOVEREIGN | WALLET TRACKER</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #050505; color: #00f2ff; font-family: 'Courier New', Courier, monospace; }
-        .terminal-grid { background-image: radial-gradient(#111 1px, transparent 1px); background-size: 20px 20px; }
-        .stat-card { background: rgba(10, 10, 10, 0.8); border: 1px solid #1a1a1a; transition: all 0.3s; }
-        .stat-card:hover { border-color: #00f2ff; box-shadow: 0 0 15px rgba(0, 242, 255, 0.2); }
-        .glitch { animation: glitch 2s infinite; }
-        @keyframes glitch { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+        body { background: #020202; color: #00f2ff; font-family: 'Courier New', monospace; overflow-x: hidden; }
+        .terminal-glow { box-shadow: 0 0 20px rgba(0, 242, 255, 0.15); border: 1px solid #1a1a1a; }
+        .token-card { background: linear-gradient(145deg, #0a0a0a, #111); }
+        .scan-line { width: 100%; height: 2px; background: #00f2ff; position: absolute; opacity: 0.3; animation: scan 3s linear infinite; }
+        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
     </style>
 </head>
-<body class="terminal-grid min-h-screen p-4">
+<body class="p-4 md:p-8">
     <div class="max-w-6xl mx-auto">
         <!-- Header -->
-        <header class="flex justify-between items-end border-b border-zinc-800 pb-6 mb-8">
+        <div class="flex flex-col md:flex-row justify-between items-center border-b border-zinc-800 pb-6 mb-8">
             <div>
-                <h1 class="text-4xl font-bold tracking-tighter glitch">ICEBOYS SOVEREIGN V15</h1>
-                <p class="text-zinc-500 text-xs uppercase tracking-widest">Master Commander: Mex Robert</p>
+                <h1 class="text-3xl font-black tracking-tighter">ICEBOYS SOVEREIGN V15</h1>
+                <p class="text-zinc-500 text-xs">SOLANA WHALE TRACKER & LIQUIDITY MELTER</p>
             </div>
-            <div class="text-right">
-                <p class="text-[10px] text-zinc-500 uppercase">System Status</p>
-                <p class="text-green-500 font-bold">42 NODES ONLINE [FAST-RPC]</p>
-            </div>
-        </header>
-
-        <!-- Main Dashboard Stats -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-            <div class="stat-card p-4 rounded">
-                <p class="text-zinc-500 text-[10px] uppercase">Sovereign Vault (ETH)</p>
-                <p class="text-2xl font-bold">14.825 ETH</p>
-            </div>
-            <div class="stat-card p-4 rounded">
-                <p class="text-zinc-500 text-[10px] uppercase">IBS Token Supply</p>
-                <p class="text-2xl font-bold">30.0B</p>
-            </div>
-            <div class="stat-card p-4 rounded">
-                <p class="text-zinc-500 text-[10px] uppercase">Active Striking</p>
-                <p class="text-2xl font-bold">124 TX/m</p>
-            </div>
-            <div class="stat-card p-4 rounded">
-                <p class="text-zinc-500 text-[10px] uppercase">Fleet Coverage</p>
-                <p class="text-2xl font-bold">36 BOTS</p>
+            <div class="mt-4 md:mt-0 text-right">
+                <div class="text-[10px] text-zinc-500">VAULT: 8dtu...Hbxy</div>
+                <div class="text-green-500 font-bold animate-pulse">36 NODES BROADCASTING</div>
             </div>
         </div>
 
-        <!-- Interactive Terminal -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="lg:col-span-2 space-y-4">
-                <div class="stat-card p-6 rounded-lg">
-                    <h2 class="text-sm font-bold mb-4 border-l-2 border-cyan-500 pl-2">MemeCoinChain Strike Terminal</h2>
-                    <div class="space-y-4">
-                        <input type="text" id="ca" placeholder="ENTER CONTRACT ADDRESS (SOL/ETH)..." class="w-full bg-black border border-zinc-800 p-4 text-cyan-400 text-sm focus:outline-none focus:border-cyan-500">
-                        <div class="grid grid-cols-2 gap-4">
-                            <button onclick="log('INITIATING VOLUME WAR...')" class="border border-cyan-900 bg-cyan-950/20 py-4 hover:bg-cyan-500 hover:text-black transition uppercase text-xs font-bold">Volume War (0.5 SOL)</button>
-                            <button onclick="log('SYNCING TRENDING NODES...')" class="border border-purple-900 bg-purple-950/20 py-4 hover:bg-purple-500 hover:text-black transition uppercase text-xs font-bold">Trending (1.5 SOL)</button>
+        <!-- Wallet Tracker Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <div class="lg:col-span-2 terminal-glow p-6 rounded-lg relative overflow-hidden">
+                <div class="scan-line"></div>
+                <h2 class="text-sm font-bold mb-4 uppercase tracking-widest text-white">Institutional Wallet Tracker</h2>
+                <div class="flex gap-2">
+                    <input type="text" id="walletInput" placeholder="Insert Solana Wallet Address..." class="flex-1 bg-black border border-zinc-800 p-4 text-cyan-400 text-sm outline-none focus:border-cyan-500">
+                    <button onclick="trackWallet()" class="bg-cyan-500 text-black px-6 font-bold hover:bg-white transition">TRACK</button>
+                </div>
+                <div id="trackerResults" class="mt-6 hidden space-y-4">
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="p-3 bg-zinc-900/50 border border-zinc-800">
+                            <div class="text-[10px] text-zinc-500 uppercase">Win Rate</div>
+                            <div class="text-xl font-bold text-green-400">78.4%</div>
+                        </div>
+                        <div class="p-3 bg-zinc-900/50 border border-zinc-800">
+                            <div class="text-[10px] text-zinc-500 uppercase">Avg PNL</div>
+                            <div class="text-xl font-bold text-cyan-400">+12.4 SOL</div>
+                        </div>
+                        <div class="p-3 bg-zinc-900/50 border border-zinc-800">
+                            <div class="text-[10px] text-zinc-500 uppercase">Trust Score</div>
+                            <div class="text-xl font-bold text-white">Tier-A</div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="stat-card p-4 rounded-lg h-48 overflow-y-auto font-mono text-[10px] text-zinc-400" id="terminal-logs">
-                    <p>> [SYSTEM] Sovereign V15 initialized...</p>
-                    <p>> [SYSTEM] Helius Fast-RPC connected...</p>
-                    <p>> [SYSTEM] 36 bots awaiting commands...</p>
                 </div>
             </div>
 
-            <div class="space-y-4">
-                <div class="stat-card p-6 rounded-lg">
-                    <h3 class="text-xs font-bold mb-4 text-zinc-500 uppercase italic">Revenue Stream</h3>
-                    <div class="space-y-3">
-                        <div class="flex justify-between text-xs">
-                            <span class="text-zinc-500">Weekly Goal:</span>
-                            <span class="text-cyan-400">13.5 SOL</span>
-                        </div>
-                        <div class="w-full bg-zinc-900 h-1 mt-1">
-                            <div class="bg-cyan-500 h-1 w-[65%] shadow-[0_0_10px_#00f2ff]"></div>
-                        </div>
-                        <p class="text-[9px] text-zinc-600 mt-4 leading-relaxed">All revenue flows to: 8dtuyskTtsB78DFDPWZszarvDpedwftKYCoMdZwjHbxy. 40% of SOL automatically initiates IBS token melting.</p>
+            <!-- Subscription Module -->
+            <div class="terminal-glow p-6 rounded-lg token-card">
+                <h3 class="text-xs font-bold text-zinc-500 mb-4 uppercase">Elite Subscription</h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center border-b border-zinc-800 pb-2">
+                        <span class="text-xs">1 Month Access</span>
+                        <span class="text-cyan-400 font-bold">2.5 SOL</span>
                     </div>
+                    <div class="flex justify-between items-center border-b border-zinc-800 pb-2">
+                        <span class="text-xs">Lifetime Pass</span>
+                        <span class="text-cyan-400 font-bold">10.0 SOL</span>
+                    </div>
+                    <button class="w-full bg-white text-black py-3 font-bold uppercase text-xs mt-2 hover:bg-cyan-500 transition">Unlock Whale Alerts</button>
+                    <p class="text-[9px] text-zinc-600 text-center italic">All fees are automatically used to burn/melt IBS liquidity.</p>
                 </div>
-                <button onclick="window.location.href='https://t.me/ICEBOYSIBS_bot'" class="w-full bg-white text-black font-bold py-4 rounded uppercase text-xs hover:bg-cyan-400 transition">Contact Commander</button>
+            </div>
+        </div>
+
+        <!-- Bottom Grid: Fleet Status -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="stat-card border border-zinc-800 p-4">
+                <p class="text-[10px] text-zinc-500">IBS PRICE</p>
+                <p class="text-lg font-bold text-white">$0.000412 <span class="text-green-500 text-[10px]">+14%</span></p>
+            </div>
+            <div class="stat-card border border-zinc-800 p-4">
+                <p class="text-[10px] text-zinc-500">FLEET LIQUIDITY</p>
+                <p class="text-lg font-bold text-white">284.5 SOL</p>
+            </div>
+            <div class="stat-card border border-zinc-800 p-4">
+                <p class="text-[10px] text-zinc-500">ACTIVE TASKS</p>
+                <p class="text-lg font-bold text-white">1,204</p>
+            </div>
+            <div class="stat-card border border-zinc-800 p-4">
+                <p class="text-[10px] text-zinc-500">LAST BURN</p>
+                <p class="text-lg font-bold text-cyan-400">14m ago</p>
             </div>
         </div>
     </div>
 
     <script>
-        function log(msg) {
-            const l = document.getElementById('terminal-logs');
-            l.innerHTML += `<p class="text-cyan-400">> [CMD] ${msg}</p>`;
-            l.scrollTop = l.scrollHeight;
-            if(document.getElementById('ca').value === "") {
-                l.innerHTML += `<p class="text-red-500">> [ERR] NO TARGET ADDRESS DETECTED</p>`;
-            }
+        function trackWallet() {
+            const results = document.getElementById('trackerResults');
+            results.classList.remove('hidden');
+            // Logic to simulate whale tracking initialization
         }
     </script>
 </body>
 </html>
+
+
 
 
