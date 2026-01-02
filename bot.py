@@ -9,9 +9,8 @@ from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, Callb
 from telegram.constants import ParseMode
 
 # --- TARGET ACQUISITION ---
-# Use the Numerical ID for guaranteed delivery
+COMMANDER_ID = 6453658778  # Mex Robert
 MAIN_CHANNEL_ID = -1002384609234  # @ICEGODSICEDEVILS
-WHALE_CHAT_ID = -1001924735148    # Whale Alert Chat
 
 raw_tokens = os.environ.get("BOT_TOKENS", "")
 BOT_TOKENS = [t.strip() for t in raw_tokens.split(",") if t.strip()]
@@ -19,70 +18,71 @@ SOL_VAULT = "8dtuyskTtsB78DFDPWZszarvDpedwftKYCoMdZwjHbxy"
 
 app = Flask(__name__, static_folder='.')
 
-# --- AUTO-BROADCAST LOGIC (THE HYPE MACHINE) ---
-async def empire_broadcast_loop(application):
-    """Posts automated institutional updates to your channel every 30-60 mins"""
-    while True:
-        try:
-            # Staggered updates to keep the channel alive
-            await asyncio.sleep(random.randint(1800, 3600))
-
-            alerts = [
-                "🚨 <b>WHALE MOVEMENT DETECTED</b>\n\nUnknown Wallet just loaded 450 SOL of $IBS.\nTracking via Sovereign V15 Nexus.",
-                "📈 <b>SOLANA TRENDING UPDATE</b>\n\n42 Nodes are currently simulating volume for Tier-1 Assets.\nJoin the Strike via the Terminal.",
-                "❄️ <b>ICEGODS INTEL</b>\n\nInstitutional Wallet <code>8dtuy...</code> Win-rate: 89.2%.\nView full PNL on the Dashboard."
-            ]
-
-            msg = random.choice(alerts)
-            buttons = InlineKeyboardMarkup([[
-                InlineKeyboardButton("🌐 OPEN SOVEREIGN TERMINAL", url="https://iceboys-sovereign.onrender.com")
-            ]])
-
-            await application.bot.send_message(
-                chat_id=MAIN_CHANNEL_ID,
-                text=msg,
-                reply_markup=buttons,
-                parse_mode=ParseMode.HTML
-            )
-        except Exception as e:
-            print(f"Broadcast Error: {e}")
-
-# --- COMMANDS ---
+# --- COMMANDER PRIVILEGES ---
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    text = (
-        "❄️ <b>ICEGODS SOVEREIGN V15</b>\n"
-        "────────────────────\n"
-        "The Nexus is synced with @ICEGODSICEDEVILS.\n"
-        "Your institutional tools are ready for deployment."
-    )
-    buttons = InlineKeyboardMarkup([
-        [InlineKeyboardButton("🔍 TRACK WHALE PNL", url="https://iceboys-sovereign.onrender.com")],
-        [InlineKeyboardButton("⚔️ INITIATE VOLUME WAR", callback_data='war')],
-        [InlineKeyboardButton("📢 JOIN COMMAND CENTER", url="https://t.me/ICEGODSICEDEVILS")]
-    ])
+    user_id = update.effective_user.id
+
+    # Check if the user is the Commander
+    if user_id == COMMANDER_ID:
+        text = (
+            "❄️ <b>COMMANDER MEX ROBERT IDENTIFIED</b>\n"
+            "────────────────────\n"
+            "The Sovereign Fleet is at your disposal. All 36 nodes are synchronized.\n\n"
+            "<b>ADMIN ACCESS GRANTED:</b>"
+        )
+        buttons = InlineKeyboardMarkup([
+            [InlineKeyboardButton("📢 BROADCAST TO CHANNELS", callback_data='admin_broadcast')],
+            [InlineKeyboardButton("📊 VIEW VAULT STATS", url="https://iceboys-sovereign.onrender.com")],
+            [InlineKeyboardButton("⚔️ TEST STRIKE SEQUENCE", callback_data='war')]
+        ])
+    else:
+        # Standard User View
+        text = (
+            "❄️ <b>SOVEREIGN V15 NEXUS</b>\n"
+            "────────────────────\n"
+            "Institutional Tracking & Volume Warfare.\n"
+            "Status: <b>Optimal</b>"
+        )
+        buttons = InlineKeyboardMarkup([
+            [InlineKeyboardButton("🔍 TRACK WHALE WALLET", url="https://iceboys-sovereign.onrender.com")],
+            [InlineKeyboardButton("⚔️ INITIATE VOLUME WAR (0.5 SOL)", callback_data='war')]
+        ])
+
     await update.message.reply_text(text, reply_markup=buttons, parse_mode=ParseMode.HTML)
 
+async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+
+    if query.data == 'admin_broadcast':
+        if query.from_user.id != COMMANDER_ID: return
+
+        broadcast_text = (
+            "🚀 <b>ICEGODS SOVEREIGN STRIKE ALERT</b>\n\n"
+            "The Nexus has detected a new liquidity pool. "
+            "All 36 bots are now initializing volume protocols.\n\n"
+            "Join the elite: <a href='https://iceboys-sovereign.onrender.com'>Terminal Link</a>"
+        )
+        try:
+            await context.bot.send_message(chat_id=MAIN_CHANNEL_ID, text=broadcast_text, parse_mode=ParseMode.HTML)
+            await query.edit_message_text("✅ <b>BROADCAST SENT TO @ICEGODSICEDEVILS</b>", parse_mode=ParseMode.HTML)
+        except Exception as e:
+            await query.edit_message_text(f"❌ Error: {e}", parse_mode=ParseMode.HTML)
+
 # --- ENGINE BOOT ---
-async def start_node(token, is_master=False):
+async def start_node(token):
     try:
         builder = ApplicationBuilder().token(token).build()
         builder.add_handler(CommandHandler("start", start))
-
+        builder.add_handler(CallbackQueryHandler(handle_callback))
         await builder.initialize()
         await builder.start()
-
-        # Only the first bot acts as the Channel Broadcaster to avoid spam
-        if is_master:
-            asyncio.create_task(empire_broadcast_loop(builder))
-
         await builder.updater.start_polling(drop_pending_updates=True)
         while True: await asyncio.sleep(100)
     except: pass
 
 async def run_fleet():
-    tasks = []
-    for i, token in enumerate(BOT_TOKENS):
-        tasks.append(start_node(token, is_master=(i == 0)))
+    tasks = [start_node(t) for t in BOT_TOKENS if t]
     await asyncio.gather(*tasks)
 
 @app.route('/')
