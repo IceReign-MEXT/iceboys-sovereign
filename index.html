@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IBS SOVEREIGN | V15 Command</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #050505; color: #00f2ff; font-family: 'Courier New', Courier, monospace; }
+        .terminal-grid { background-image: radial-gradient(#111 1px, transparent 1px); background-size: 20px 20px; }
+        .stat-card { background: rgba(10, 10, 10, 0.8); border: 1px solid #1a1a1a; transition: all 0.3s; }
+        .stat-card:hover { border-color: #00f2ff; box-shadow: 0 0 15px rgba(0, 242, 255, 0.2); }
+        .glitch { animation: glitch 2s infinite; }
+        @keyframes glitch { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+    </style>
+</head>
+<body class="terminal-grid min-h-screen p-4">
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <header class="flex justify-between items-end border-b border-zinc-800 pb-6 mb-8">
+            <div>
+                <h1 class="text-4xl font-bold tracking-tighter glitch">ICEBOYS SOVEREIGN V15</h1>
+                <p class="text-zinc-500 text-xs uppercase tracking-widest">Master Commander: Mex Robert</p>
+            </div>
+            <div class="text-right">
+                <p class="text-[10px] text-zinc-500 uppercase">System Status</p>
+                <p class="text-green-500 font-bold">42 NODES ONLINE [FAST-RPC]</p>
+            </div>
+        </header>
+
+        <!-- Main Dashboard Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <div class="stat-card p-4 rounded">
+                <p class="text-zinc-500 text-[10px] uppercase">Sovereign Vault (ETH)</p>
+                <p class="text-2xl font-bold">14.825 ETH</p>
+            </div>
+            <div class="stat-card p-4 rounded">
+                <p class="text-zinc-500 text-[10px] uppercase">IBS Token Supply</p>
+                <p class="text-2xl font-bold">30.0B</p>
+            </div>
+            <div class="stat-card p-4 rounded">
+                <p class="text-zinc-500 text-[10px] uppercase">Active Striking</p>
+                <p class="text-2xl font-bold">124 TX/m</p>
+            </div>
+            <div class="stat-card p-4 rounded">
+                <p class="text-zinc-500 text-[10px] uppercase">Fleet Coverage</p>
+                <p class="text-2xl font-bold">36 BOTS</p>
+            </div>
+        </div>
+
+        <!-- Interactive Terminal -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 space-y-4">
+                <div class="stat-card p-6 rounded-lg">
+                    <h2 class="text-sm font-bold mb-4 border-l-2 border-cyan-500 pl-2">MemeCoinChain Strike Terminal</h2>
+                    <div class="space-y-4">
+                        <input type="text" id="ca" placeholder="ENTER CONTRACT ADDRESS (SOL/ETH)..." class="w-full bg-black border border-zinc-800 p-4 text-cyan-400 text-sm focus:outline-none focus:border-cyan-500">
+                        <div class="grid grid-cols-2 gap-4">
+                            <button onclick="log('INITIATING VOLUME WAR...')" class="border border-cyan-900 bg-cyan-950/20 py-4 hover:bg-cyan-500 hover:text-black transition uppercase text-xs font-bold">Volume War (0.5 SOL)</button>
+                            <button onclick="log('SYNCING TRENDING NODES...')" class="border border-purple-900 bg-purple-950/20 py-4 hover:bg-purple-500 hover:text-black transition uppercase text-xs font-bold">Trending (1.5 SOL)</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-card p-4 rounded-lg h-48 overflow-y-auto font-mono text-[10px] text-zinc-400" id="terminal-logs">
+                    <p>> [SYSTEM] Sovereign V15 initialized...</p>
+                    <p>> [SYSTEM] Helius Fast-RPC connected...</p>
+                    <p>> [SYSTEM] 36 bots awaiting commands...</p>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <div class="stat-card p-6 rounded-lg">
+                    <h3 class="text-xs font-bold mb-4 text-zinc-500 uppercase italic">Revenue Stream</h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-zinc-500">Weekly Goal:</span>
+                            <span class="text-cyan-400">13.5 SOL</span>
+                        </div>
+                        <div class="w-full bg-zinc-900 h-1 mt-1">
+                            <div class="bg-cyan-500 h-1 w-[65%] shadow-[0_0_10px_#00f2ff]"></div>
+                        </div>
+                        <p class="text-[9px] text-zinc-600 mt-4 leading-relaxed">All revenue flows to: 8dtuyskTtsB78DFDPWZszarvDpedwftKYCoMdZwjHbxy. 40% of SOL automatically initiates IBS token melting.</p>
+                    </div>
+                </div>
+                <button onclick="window.location.href='https://t.me/ICEBOYSIBS_bot'" class="w-full bg-white text-black font-bold py-4 rounded uppercase text-xs hover:bg-cyan-400 transition">Contact Commander</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function log(msg) {
+            const l = document.getElementById('terminal-logs');
+            l.innerHTML += `<p class="text-cyan-400">> [CMD] ${msg}</p>`;
+            l.scrollTop = l.scrollHeight;
+            if(document.getElementById('ca').value === "") {
+                l.innerHTML += `<p class="text-red-500">> [ERR] NO TARGET ADDRESS DETECTED</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
+
+
