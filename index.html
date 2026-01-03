@@ -15,100 +15,92 @@
                               linear-gradient(90deg, #26292e 1px, transparent 1px);
             background-size: 50px 50px; opacity: 0.05;
         }
-        .btn-glow:hover {
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
-            transform: translateY(-1px);
-        }
+        .modal-blur { backdrop-filter: blur(8px); }
     </style>
 </head>
 <body class="min-h-screen overflow-x-hidden">
     <div class="fixed inset-0 grid-bg pointer-events-none"></div>
 
-    <!-- NAVIGATION -->
+    <!-- PAYMENT MODAL (RESTRICTION LAYER) -->
+    <div id="paymentModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/90 modal-blur p-4">
+        <div class="glass max-w-md w-full p-8 text-center space-y-6 border-emerald-500/30 shadow-2xl">
+            <h3 class="text-xl font-black italic uppercase text-white tracking-widest">Access Restricted</h3>
+            <p class="text-zinc-400 text-sm leading-relaxed">To activate the <span class="text-white font-bold">Force-Indexing Engine</span> and distribute your token across the 54-node fleet, a Sovereign Tax is required.</p>
+            
+            <div class="bg-zinc-900 p-4 rounded border border-zinc-800 text-left">
+                <p class="text-[9px] font-bold text-zinc-500 uppercase mb-2">Send 1.5 SOL to Vault:</p>
+                <p class="text-[10px] mono text-emerald-400 break-all select-all">8dtuyskTtsB78DFDPWZszarvDpedwftKYCoMdZwjHbxy</p>
+            </div>
+
+            <button onclick="checkPayment()" id="verifyBtn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-4 font-black text-xs uppercase tracking-widest transition-all rounded-sm">Verify Transaction</button>
+            <button onclick="closeModal()" class="text-zinc-600 text-[10px] uppercase font-bold hover:text-white transition-all">Cancel Request</button>
+        </div>
+    </div>
+
     <nav class="relative z-10 border-b border-zinc-800 bg-black/80 backdrop-blur-md px-6 md:px-12 h-16 flex items-center justify-between">
         <div class="flex items-center gap-3">
             <div class="w-7 h-7 bg-white rounded-sm flex items-center justify-center text-black font-black text-xs italic">S</div>
-            <span class="font-black tracking-tighter text-lg uppercase italic">Sovereign <span class="text-zinc-500 font-light">Nexus</span></span>
+            <span class="font-black tracking-tighter text-lg uppercase italic text-white">Sovereign <span class="text-zinc-500 font-light">Nexus</span></span>
         </div>
         <div class="bg-zinc-900/50 px-3 py-1 rounded border border-zinc-800 flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-            <span class="text-[10px] mono font-bold text-zinc-400 uppercase tracking-widest">Nodes Active</span>
+            <span class="text-[10px] mono font-bold text-zinc-400 uppercase tracking-widest">Fleet Active</span>
         </div>
     </nav>
 
-    <!-- MAIN CONTENT -->
     <main class="relative z-10 p-6 md:p-12 max-w-7xl mx-auto space-y-8">
-        
-        <!-- VITALS BAR -->
+        <!-- STATS BAR -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div class="glass p-4 rounded-sm border-l-2 border-l-white">
                 <p class="text-[9px] text-zinc-500 font-bold uppercase tracking-widest mb-1">IBS Value</p>
-                <p class="text-xl font-bold mono tracking-tighter">$0.000412</p>
+                <p class="text-xl font-bold mono">$0.000412</p>
             </div>
-            <div class="glass p-4 rounded-sm">
-                <p class="text-[9px] text-zinc-500 font-bold uppercase tracking-widest mb-1">Fleet PNL</p>
-                <p class="text-xl font-bold mono text-emerald-500 tracking-tighter">+12.8k SOL</p>
-            </div>
-            <div class="glass p-4 rounded-sm">
-                <p class="text-[9px] text-zinc-500 font-bold uppercase tracking-widest mb-1">Melted IBS</p>
-                <p class="text-xl font-bold mono text-red-500 tracking-tighter">450.2M</p>
-            </div>
-            <div class="glass p-4 rounded-sm">
-                <p class="text-[9px] text-zinc-500 font-bold uppercase tracking-widest mb-1">Vault</p>
-                <p class="text-[10px] mono text-zinc-400 truncate tracking-tighter">8dtu...Hbxy</p>
-            </div>
+            <div class="glass p-4 rounded-sm"><p class="text-[9px] text-zinc-500 font-bold uppercase mb-1">Fleet PNL</p><p class="text-xl font-bold mono text-emerald-500">+12.8k SOL</p></div>
+            <div class="glass p-4 rounded-sm"><p class="text-[9px] text-zinc-500 font-bold uppercase mb-1">Melted IBS</p><p class="text-xl font-bold mono text-red-500">450.2M</p></div>
+            <div class="glass p-4 rounded-sm"><p class="text-[9px] text-zinc-500 font-bold uppercase mb-1">Vault</p><p class="text-[10px] mono text-zinc-400 truncate">8dtu...Hbxy</p></div>
         </div>
 
-        <!-- TRACKER INTERFACE -->
-        <div class="glass p-8 md:p-16 rounded-sm shadow-2xl relative overflow-hidden">
-            <div class="absolute top-0 right-0 p-4 opacity-10">
-                <div class="w-24 h-24 border-4 border-white rounded-full"></div>
-            </div>
-
-            <h2 class="text-[11px] font-black uppercase tracking-[0.5em] text-zinc-600 mb-10 pl-4 border-l border-zinc-700">Institutional Whale Indexing</h2>
-            
+        <!-- MAIN SEARCH -->
+        <div class="glass p-8 md:p-16 rounded-sm shadow-2xl relative">
+            <h2 class="text-[11px] font-black uppercase tracking-[0.5em] text-zinc-600 mb-10 pl-4 border-l border-zinc-700">Whale Tracking Engine</h2>
             <div class="flex flex-col md:flex-row gap-4 mb-12">
                 <input id="walletInput" type="text" placeholder="ENTER SOLANA WALLET ADDRESS..." 
-                       class="flex-1 bg-black border border-zinc-800 p-5 text-sm mono text-emerald-400 focus:outline-none focus:border-zinc-400 transition-all rounded-sm placeholder:text-zinc-800">
-                <button onclick="track()" id="btn" class="btn-glow bg-white text-black px-12 py-5 font-black text-xs uppercase tracking-[0.2em] transition-all rounded-sm">Track</button>
+                       class="flex-1 bg-black border border-zinc-800 p-5 text-sm mono text-emerald-400 focus:outline-none focus:border-zinc-400 transition-all rounded-sm">
+                <button onclick="track()" id="trackBtn" class="bg-white text-black px-12 py-5 font-black text-xs uppercase tracking-[0.2em] rounded-sm hover:bg-zinc-300">Track</button>
             </div>
 
-            <!-- RESULT PANEL -->
-            <div id="results" class="hidden grid grid-cols-1 md:grid-cols-3 gap-8 pt-12 border-t border-zinc-800/50 animate-in fade-in slide-in-from-bottom-6 duration-700">
+            <!-- RESULTS PANEL -->
+            <div id="results" class="hidden grid grid-cols-1 md:grid-cols-3 gap-8 pt-12 border-t border-zinc-800/50">
                 <div class="p-6 bg-zinc-900/20 rounded-sm border border-zinc-800/40">
-                    <p class="text-[10px] text-zinc-500 uppercase font-bold mb-3 tracking-widest">Win Rate</p>
-                    <p id="wr" class="text-4xl font-black text-emerald-500 mono tracking-tighter">--</p>
+                    <p class="text-[10px] text-zinc-500 uppercase font-bold mb-3">Win Rate</p>
+                    <p id="wr" class="text-4xl font-black text-emerald-500 mono">--</p>
                 </div>
                 <div class="p-6 bg-zinc-900/20 rounded-sm border border-zinc-800/40">
-                    <p class="text-[10px] text-zinc-500 uppercase font-bold mb-3 tracking-widest">Net PNL</p>
-                    <p id="pn" class="text-4xl font-black text-white mono tracking-tighter">--</p>
+                    <p class="text-[10px] text-zinc-500 uppercase font-bold mb-3">Net PNL</p>
+                    <p id="pn" class="text-4xl font-black text-white mono">--</p>
                 </div>
                 <div class="p-6 bg-zinc-900/20 rounded-sm border border-zinc-800/40">
-                    <p class="text-[10px] text-zinc-500 uppercase font-bold mb-3 tracking-widest">Alpha Score</p>
-                    <p id="tr" class="text-4xl font-black text-zinc-400 mono tracking-tighter">--</p>
+                    <p class="text-[10px] text-zinc-500 uppercase font-bold mb-3">Alpha Score</p>
+                    <p id="tr" class="text-4xl font-black text-zinc-400 mono">--</p>
                 </div>
             </div>
-        </div>
-
-        <!-- FOOTER INFO -->
-        <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] text-zinc-600 uppercase tracking-widest font-bold">
-            <p>© 2026 ICEBOYS SOVEREIGN PROTOCOL</p>
-            <p>COMMANDER: MEX ROBERT</p>
-            <p>STATUS: OPTIMAL</p>
         </div>
     </main>
 
     <script>
+        let hasPaid = false; 
+
         async function track() {
-            const input = document.getElementById('walletInput');
-            const btn = document.getElementById('btn');
-            const res = document.getElementById('results');
-            
-            if(!input.value || input.value.length < 32) {
-                input.classList.add('border-red-900');
-                setTimeout(() => input.classList.remove('border-red-900'), 1000);
+            if (!hasPaid) {
+                document.getElementById('paymentModal').classList.remove('hidden');
                 return;
             }
+
+            const input = document.getElementById('walletInput');
+            const btn = document.getElementById('trackBtn');
+            const res = document.getElementById('results');
+            
+            if(!input.value || input.value.length < 32) return;
 
             btn.innerText = "QUERYING NEXUS...";
             btn.disabled = true;
@@ -120,17 +112,33 @@
                     body: JSON.stringify({wallet: input.value})
                 });
                 const data = await response.json();
-                
                 res.classList.remove('hidden');
                 document.getElementById('wr').innerText = data.winRate;
                 document.getElementById('pn').innerText = data.pnl;
                 document.getElementById('tr').innerText = data.trust;
-            } catch (e) { 
-                console.error("Critical: Connection to Nexus Core interrupted.");
-            } finally { 
-                btn.innerText = "TRACK"; 
-                btn.disabled = false; 
-            }
+            } catch (e) { console.error("Sync Error"); }
+            finally { btn.innerText = "TRACK"; btn.disabled = false; }
+        }
+
+        function closeModal() {
+            document.getElementById('paymentModal').classList.add('hidden');
+        }
+
+        async function checkPayment() {
+            const btn = document.getElementById('verifyBtn');
+            btn.innerText = "SCANNING ON-CHAIN...";
+            btn.disabled = true;
+
+            // Simulated blockchain verification
+            setTimeout(() => {
+                btn.innerText = "NO TRANSACTION FOUND";
+                btn.classList.replace('bg-emerald-600', 'bg-red-900');
+                setTimeout(() => {
+                    btn.innerText = "VERIFY TRANSACTION";
+                    btn.classList.replace('bg-red-900', 'bg-emerald-600');
+                    btn.disabled = false;
+                }, 3000);
+            }, 2500);
         }
     </script>
 </body>
