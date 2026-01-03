@@ -3,106 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IBS SOVEREIGN | WALLET TRACKER</title>
+    <title>SOVEREIGN NEXUS | INSTITUTIONAL DIVISION</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { background: #020202; color: #00f2ff; font-family: 'Courier New', monospace; overflow-x: hidden; }
-        .terminal-glow { box-shadow: 0 0 20px rgba(0, 242, 255, 0.15); border: 1px solid #1a1a1a; }
-        .token-card { background: linear-gradient(145deg, #0a0a0a, #111); }
-        .scan-line { width: 100%; height: 2px; background: #00f2ff; position: absolute; opacity: 0.3; animation: scan 3s linear infinite; }
-        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+        :root {
+            --bg-deep: #0a0b0d;
+            --panel-bg: #14161a;
+            --accent-silver: #94a3b8;
+            --accent-gold: #c5a059;
+            --border-color: #26292e;
+        }
+        body { 
+            background-color: var(--bg-deep); 
+            color: #e2e8f0; 
+            font-family: 'Inter', sans-serif;
+            letter-spacing: -0.01em;
+        }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glass-panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+        }
+        .status-pulse {
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.4);
+        }
+        .btn-institutional {
+            background: #f8fafc;
+            color: #0f172a;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+        .btn-institutional:hover {
+            background: #cbd5e1;
+            transform: translateY(-1px);
+        }
+        .grid-bg {
+            background-image: linear-gradient(var(--border-color) 1px, transparent 1px), 
+                              linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.1;
+        }
     </style>
 </head>
-<body class="p-4 md:p-8">
-    <div class="max-w-6xl mx-auto">
-        <!-- Header -->
-        <div class="flex flex-col md:flex-row justify-between items-center border-b border-zinc-800 pb-6 mb-8">
+<body class="min-h-screen overflow-x-hidden">
+    <div class="fixed inset-0 grid-bg pointer-events-none"></div>
+
+    <!-- TOP NAVIGATION BAR -->
+    <nav class="relative z-10 border-b border-zinc-800 bg-black/50 backdrop-blur-xl px-8 h-16 flex items-center justify-between">
+        <div class="flex items-center gap-8">
+            <div class="flex items-center gap-2">
+                <div class="w-6 h-6 bg-white rounded-sm flex items-center justify-center text-black font-black text-xs italic">S</div>
+                <span class="font-extrabold tracking-tighter text-lg uppercase">Sovereign <span class="text-zinc-500 font-light italic">Nexus</span></span>
+            </div>
+            <div class="hidden md:flex gap-6 text-[11px] font-semibold text-zinc-400 uppercase tracking-widest">
+                <a href="#" class="hover:text-white transition">Terminal</a>
+                <a href="#" class="hover:text-white transition">Shadow Indexer</a>
+                <a href="#" class="hover:text-white transition">Vaults</a>
+                <a href="#" class="hover:text-white transition text-zinc-600">API Documentation</a>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2 bg-zinc-900/50 px-3 py-1 rounded border border-zinc-800">
+                <span class="w-2 h-2 rounded-full bg-green-500 status-pulse"></span>
+                <span class="text-[10px] mono font-bold text-zinc-300">NETWORK: STABLE</span>
+            </div>
+            <button class="btn-institutional px-4 py-1.5 rounded text-[11px] uppercase">Initialize Terminal</button>
+        </div>
+    </nav>
+
+    <main class="relative z-10 p-8 max-w-[1600px] mx-auto">
+        <!-- COMMANDER HEADER -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">
             <div>
-                <h1 class="text-3xl font-black tracking-tighter">ICEBOYS SOVEREIGN V15</h1>
-                <p class="text-zinc-500 text-xs">SOLANA WHALE TRACKER & LIQUIDITY MELTER</p>
+                <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-[0.4em] mb-1">Global Command Center</p>
+                <h2 class="text-4xl font-extrabold tracking-tighter text-white">Institutional <span class="text-zinc-600">Access</span></h2>
             </div>
-            <div class="mt-4 md:mt-0 text-right">
-                <div class="text-[10px] text-zinc-500">VAULT: 8dtu...Hbxy</div>
-                <div class="text-green-500 font-bold animate-pulse">36 NODES BROADCASTING</div>
+            <div class="bg-zinc-900/40 p-3 border-l-2 border-zinc-200">
+                <p class="text-[9px] text-zinc-500 uppercase font-bold">Authorized Commander</p>
+                <p class="text-xs mono text-zinc-200">MEX ROBERT // ID: 6453658778</p>
             </div>
         </div>
 
-        <!-- Wallet Tracker Section -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-            <div class="lg:col-span-2 terminal-glow p-6 rounded-lg relative overflow-hidden">
-                <div class="scan-line"></div>
-                <h2 class="text-sm font-bold mb-4 uppercase tracking-widest text-white">Institutional Wallet Tracker</h2>
-                <div class="flex gap-2">
-                    <input type="text" id="walletInput" placeholder="Insert Solana Wallet Address..." class="flex-1 bg-black border border-zinc-800 p-4 text-cyan-400 text-sm outline-none focus:border-cyan-500">
-                    <button onclick="trackWallet()" class="bg-cyan-500 text-black px-6 font-bold hover:bg-white transition">TRACK</button>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- ASSET DATA (LEFT) -->
+            <div class="lg:col-span-8 space-y-6">
+                <div class="glass-panel p-8 rounded-sm">
+                    <div class="flex justify-between items-start mb-8">
+                        <div>
+                            <p class="text-[11px] text-zinc-500 font-bold uppercase mb-2">Primary Asset Pair</p>
+                            <div class="flex items-center gap-4">
+                                <h3 class="text-3xl font-bold">IBS / SOL</h3>
+                                <span class="text-emerald-500 font-bold mono text-sm">+18.42%</span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-2xl font-bold mono tracking-tighter text-white">$0.00041284</p>
+                            <p class="text-[10px] text-zinc-500 font-medium">REAL-TIME DATA STREAM</p>
+                        </div>
+                    </div>
+                    
+                    <!-- PLACEHOLDER FOR TRADINGVIEW -->
+                    <div class="w-full h-[400px] bg-black/40 rounded border border-zinc-800/50 flex flex-col items-center justify-center">
+                         <div class="w-full h-full p-4 flex flex-col opacity-20">
+                            <div class="flex-1 flex items-end gap-1">
+                                <div class="bg-emerald-500 w-full" style="height: 40%"></div>
+                                <div class="bg-emerald-500 w-full" style="height: 60%"></div>
+                                <div class="bg-red-500 w-full" style="height: 30%"></div>
+                                <div class="bg-emerald-500 w-full" style="height: 80%"></div>
+                                <div class="bg-red-500 w-full" style="height: 40%"></div>
+                                <div class="bg-emerald-500 w-full" style="height: 90%"></div>
+                            </div>
+                         </div>
+                         <div class="absolute text-center">
+                            <p class="text-[10px] text-zinc-600 uppercase font-bold mb-1 tracking-widest">Integrating Live Liquidity Chart</p>
+                            <div class="w-12 h-[1px] bg-zinc-800 mx-auto"></div>
+                         </div>
+                    </div>
                 </div>
-                <div id="trackerResults" class="mt-6 hidden space-y-4">
-                    <div class="grid grid-cols-3 gap-4">
-                        <div class="p-3 bg-zinc-900/50 border border-zinc-800">
-                            <div class="text-[10px] text-zinc-500 uppercase">Win Rate</div>
-                            <div class="text-xl font-bold text-green-400">78.4%</div>
-                        </div>
-                        <div class="p-3 bg-zinc-900/50 border border-zinc-800">
-                            <div class="text-[10px] text-zinc-500 uppercase">Avg PNL</div>
-                            <div class="text-xl font-bold text-cyan-400">+12.4 SOL</div>
-                        </div>
-                        <div class="p-3 bg-zinc-900/50 border border-zinc-800">
-                            <div class="text-[10px] text-zinc-500 uppercase">Trust Score</div>
-                            <div class="text-xl font-bold text-white">Tier-A</div>
-                        </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="glass-panel p-6">
+                        <p class="text-[10px] text-zinc-500 font-bold uppercase mb-3">Institutional Liquidity</p>
+                        <p class="text-2xl font-bold tracking-tighter text-white">284.52 <span class="text-xs text-zinc-500">SOL</span></p>
+                    </div>
+                    <div class="glass-panel p-6">
+                        <p class="text-[10px] text-zinc-500 font-bold uppercase mb-3">Force Index Status</p>
+                        <p class="text-2xl font-bold tracking-tighter text-emerald-500">DOMINATING</p>
+                    </div>
+                    <div class="glass-panel p-6">
+                        <p class="text-[10px] text-zinc-500 font-bold uppercase mb-3">Active Node Strikes</p>
+                        <p class="text-2xl font-bold tracking-tighter text-white">36 / 36</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Subscription Module -->
-            <div class="terminal-glow p-6 rounded-lg token-card">
-                <h3 class="text-xs font-bold text-zinc-500 mb-4 uppercase">Elite Subscription</h3>
-                <div class="space-y-4">
-                    <div class="flex justify-between items-center border-b border-zinc-800 pb-2">
-                        <span class="text-xs">1 Month Access</span>
-                        <span class="text-cyan-400 font-bold">2.5 SOL</span>
+            <!-- CONTROLS & HALL OF FAME (RIGHT) -->
+            <div class="lg:col-span-4 space-y-6">
+                <div class="bg-white p-8 rounded-sm text-black">
+                    <h4 class="text-xs font-black uppercase mb-4 tracking-widest">Sovereign Strike</h4>
+                    <p class="text-xs text-zinc-700 leading-relaxed mb-6">Deploy the 36-node fleet to force-index any mint address into the top gainers list across all major tracking platforms.</p>
+                    
+                    <div class="space-y-4">
+                        <input type="text" placeholder="TOKEN MINT ADDRESS" class="w-full bg-zinc-100 border-zinc-200 p-3 text-xs mono font-bold focus:outline-none focus:ring-1 focus:ring-black">
+                        <button class="w-full bg-black text-white py-4 font-bold text-xs uppercase tracking-widest hover:bg-zinc-800 transition">Execute Volume Strike</button>
                     </div>
-                    <div class="flex justify-between items-center border-b border-zinc-800 pb-2">
-                        <span class="text-xs">Lifetime Pass</span>
-                        <span class="text-cyan-400 font-bold">10.0 SOL</span>
+                </div>
+
+                <div class="glass-panel p-8">
+                    <h4 class="text-[10px] font-bold text-zinc-500 uppercase mb-6 tracking-[0.2em] border-b border-zinc-800 pb-2">Hall of Fame // Elite Holders</h4>
+                    <div class="space-y-6">
+                        <div class="flex justify-between items-center">
+                            <span class="mono text-xs text-zinc-400">7fGx...2pQn</span>
+                            <span class="text-emerald-500 font-bold text-xs">+4,204%</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="mono text-xs text-zinc-400">Az8t...9kLm</span>
+                            <span class="text-emerald-500 font-bold text-xs">+1,840%</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="mono text-xs text-zinc-400">Jp4x...0wVs</span>
+                            <span class="text-zinc-500 font-bold text-xs">+892%</span>
+                        </div>
                     </div>
-                    <button class="w-full bg-white text-black py-3 font-bold uppercase text-xs mt-2 hover:bg-cyan-500 transition">Unlock Whale Alerts</button>
-                    <p class="text-[9px] text-zinc-600 text-center italic">All fees are automatically used to burn/melt IBS liquidity.</p>
+                    <button class="w-full mt-8 py-2 border border-zinc-800 text-[10px] font-bold text-zinc-500 hover:text-white transition uppercase">View Full Rankings</button>
+                </div>
+
+                <div class="p-4 border-l-2 border-red-500/50 bg-red-500/5">
+                    <p class="text-[10px] font-bold text-red-500 uppercase mb-1">Liquidity Melt Alert</p>
+                    <p class="text-[11px] text-zinc-400 mono">450,200,000 IBS Burned in the last 24h.</p>
                 </div>
             </div>
         </div>
-
-        <!-- Bottom Grid: Fleet Status -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div class="stat-card border border-zinc-800 p-4">
-                <p class="text-[10px] text-zinc-500">IBS PRICE</p>
-                <p class="text-lg font-bold text-white">$0.000412 <span class="text-green-500 text-[10px]">+14%</span></p>
-            </div>
-            <div class="stat-card border border-zinc-800 p-4">
-                <p class="text-[10px] text-zinc-500">FLEET LIQUIDITY</p>
-                <p class="text-lg font-bold text-white">284.5 SOL</p>
-            </div>
-            <div class="stat-card border border-zinc-800 p-4">
-                <p class="text-[10px] text-zinc-500">ACTIVE TASKS</p>
-                <p class="text-lg font-bold text-white">1,204</p>
-            </div>
-            <div class="stat-card border border-zinc-800 p-4">
-                <p class="text-[10px] text-zinc-500">LAST BURN</p>
-                <p class="text-lg font-bold text-cyan-400">14m ago</p>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        function trackWallet() {
-            const results = document.getElementById('trackerResults');
-            results.classList.remove('hidden');
-            // Logic to simulate whale tracking initialization
-        }
-    </script>
+    </main>
 </body>
 </html>
-
-
 
 
